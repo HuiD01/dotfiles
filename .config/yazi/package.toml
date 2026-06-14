@@ -1,0 +1,27 @@
+[plugin]
+deps = []
+
+[[flavor.deps]]
+use = "hankertrix/bluloco-yazi:bluloco-light"
+rev = "c2092a9"
+hash = "f28bac9badabeb9097751292c1c69777"
+
+[[flavor.deps]]
+use = "hankertrix/bluloco-yazi:bluloco-dark"
+rev = "c2092a9"
+hash = "8410a97919a8df93d2d9700a30c44c69"
+
+[[flavor.deps]]
+use = "identityapproved/lain"
+rev = "f2fe379"
+hash = "8e584e7222223282f3555b7989082526"
+
+[[flavor.deps]]
+use = "gosxrgxx/flexoki-dark"
+rev = "25d28ce"
+hash = "8e6dd7e42a127173e4535993d3e0e393"
+
+[[flavor.deps]]
+use = "dangooddd/kanagawa"
+rev = "04985d1"
+hash = "c69a63981e254a3a06a11c2bf0e6af1d"
