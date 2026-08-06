@@ -2,10 +2,24 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
-# dotfiles 管理：git 数据在 ~/.dotfiles.git，工作树 = $HOME
-# 用法：config status / config add .config/yazi / config commit / config push
-function config
-    git --git-dir="$HOME/.dotfiles.git" --work-tree="$HOME" $argv
+# dotfiles 管理：镜像目录方案
+# 改完配置后执行 dotsync：拷贝配置到 ~/dotfiles 并推送 GitHub
+function dotsync
+    # 1. 同步配置到镜像仓库（排除自动生成/备份文件）
+    rsync -a --delete --exclude=".DS_Store" --exclude="yazi.toml.bak" \
+        ~/.config/yazi/ ~/dotfiles/.config/yazi/
+    rsync -a --delete --exclude=".DS_Store" --exclude="fish_variables" --exclude="config.fish.save" \
+        ~/.config/fish/ ~/dotfiles/.config/fish/
+
+    # 2. 提交并推送
+    cd ~/dotfiles
+    git add -A
+    if not git diff --cached --quiet
+        git commit -m "sync dotfiles"
+        git push
+    else
+        echo "无改动，无需同步"
+    end
 end
 
 if status is-interactive
