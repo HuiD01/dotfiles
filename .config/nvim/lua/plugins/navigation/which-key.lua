@@ -23,7 +23,6 @@ return {
 			{ "<leader>m", group = "文件标记跳转", icon = "󰃀" },
 			{ "<leader>q", group = "退出编辑器", icon = "󰩈" },
 			{ "<leader>x", group = "问题查看", icon = "" },
-			{ "<leader>o", group = "专注面板", icon = "" },
 		}, {
 			mode = { "n", "v" },
 		})
