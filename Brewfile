@@ -7,8 +7,12 @@ tap "yuzeguitarist/deck", trusted: true
 brew "openssl@3"
 # Download with resuming and segmented downloading
 brew "aria2"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
 # Cross-platform make
 brew "cmake"
+# Embeddable SQL OLAP Database Management System
+brew "duckdb"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
 # Simple, fast and user-friendly alternative to find
@@ -31,18 +35,28 @@ brew "go"
 brew "imagemagick-full", link: true
 # Lightweight and flexible command-line JSON processor
 brew "jq"
+# Simple terminal UI for git commands
+brew "lazygit"
 # Unified display of technical and tag data for audio/video
 brew "media-info"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
 # Manage multiple Node.js versions
 brew "nvm"
 # Swiss-army knife of markup format conversion
 brew "pandoc"
+# Android OTA payload dumper written in Go
+brew "payload-dumper-go"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.14"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.13"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.14"
 # SVG rendering tool and library
 brew "resvg"
 # Search tool like grep and The Silver Searcher
@@ -78,8 +92,14 @@ cask "font-iosevka"
 cask "font-symbols-only-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Menu bar manager
+cask "jordanbaird-ice"
+# Open-source cross-platform alternative to AirDrop
+cask "localsend"
 # App to write, plan, collaborate, and get organised
 cask "notion"
+# Utility to uninstall apps and remove leftover files from old/uninstalled apps
+cask "pearcleaner"
 # Open-source code editor
 cask "visual-studio-code"
 vscode "anthropic.claude-code"
@@ -88,5 +108,6 @@ vscode "ms-python.debugpy"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
 vscode "ms-python.vscode-python-envs"
+cargo "dezoomify-rs"
 npm "corepack"
 npm "pnpm"
