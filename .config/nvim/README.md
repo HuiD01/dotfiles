@@ -1,5 +1,3 @@
-# Cookvim
-
 基于Lazy.nvim配置
 
 ## 依赖
@@ -16,11 +14,6 @@
 - npm
 - lazygit
 
-## 安装地址
-
-```git
-git clone https://github.com/Youthdreamer/nvim
-```
 
 ## 部分快捷键说明(常用)
 
