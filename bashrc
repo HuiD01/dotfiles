@@ -112,8 +112,10 @@ export TERM=xterm-256color
 
 neofetch
 
-# 智能检测 SSH 反向代理隧道
-if cat < /dev/null > /dev/tcp/127.0.0.1/7897 2>/dev/null; then
+# 智能检测 SSH 反向代理隧道（端到端连通性验证，Clash 未运行时不会误判）
+if [ -n "$SSH_CONNECTION" ] && command -v curl >/dev/null 2>&1 && \
+   curl -s -m 2 -x http://127.0.0.1:7897 -o /dev/null \
+     http://www.gstatic.com/generate_204; then
     export http_proxy=http://127.0.0.1:7897
     export https_proxy=http://127.0.0.1:7897
     echo "侦测到本地代理隧道，已自动启用proxy模式"
