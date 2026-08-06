@@ -8,8 +8,9 @@ function dotsync
     # 1. 同步配置到镜像仓库（排除自动生成/备份文件）
     rsync -a --delete --exclude=".DS_Store" --exclude="yazi.toml.bak" \
         ~/.config/yazi/ ~/dotfiles/.config/yazi/
-    rsync -a --delete --exclude=".DS_Store" --exclude="fish_variables" --exclude="config.fish.save" \
-        ~/.config/fish/ ~/dotfiles/.config/fish/
+    # fish 只同步核心文件（completions/conf.d/functions 是工具自动生成的，不纳入）
+    rsync -a --exclude=".DS_Store" \
+        ~/.config/fish/config.fish ~/.config/fish/fish_plugins ~/dotfiles/.config/fish/
 
     # 2. 提交并推送
     cd ~/dotfiles
