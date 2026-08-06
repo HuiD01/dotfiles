@@ -1,27 +1,15 @@
-# Cookvim
-
-基于 [lazy.nvim](https://github.com/folke/lazy.nvim) 的手写 Neovim 配置,风格仿 [LazyVim](https://github.com/LazyVim/LazyVim)(空格 leader、which-key 提示、模块化插件目录),但不依赖 LazyVim 发行版,全部插件由 lazy.nvim 懒加载。
-
 ## 环境要求
 
 - **Neovim ≥ 0.12**(使用 `vim.lsp.config` / `vim.lsp.enable` 等 0.11+ API)
-- **macOS**(Apple Silicon;其他平台需调整部分路径)
 - 系统工具:git、ripgrep、fd、lazygit、gcc、make、unzip、python3
-- **Node**:由 [fnm](https://github.com/Schniz/fnm) 管理(node 生态用 pnpm,勿用 npm)
-- **Nerd Font**(图标显示)
 - 可选:**Neovide**(GUI,自动加载 `lua/neovide/` 配置)
 
 ## 安装
-
-配置本体维护在 [`HuiD01/dotfiles`](https://github.com/HuiD01/dotfiles) 仓库的 `.config/nvim/` 下:
 
 ```bash
 git clone https://github.com/HuiD01/dotfiles.git
 # 方式一:拷贝
 rsync -a --exclude=".git" dotfiles/.config/nvim/ ~/.config/nvim/
-# 方式二:软链接(推荐,编辑即同步)
-ln -s ~/dotfiles/.config/nvim ~/.config/nvim
-```
 
 首次启动 lazy.nvim 会自动安装全部插件,并触发 mason 安装 LSP 服务器,请保持网络通畅。
 
