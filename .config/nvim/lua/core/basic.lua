@@ -27,7 +27,6 @@ vim.opt.colorcolumn = { "80", "120" }
 vim.opt.cursorline = true -- 启动光标行高亮
 
 vim.o.termguicolors = true -- 真色彩Alacritty，kitty，iTerm2 (macOS)，Windows Terminal (Windows 10/11)等
-vim.opt.laststatus = 0 -- 禁用底部状态栏
 
 -- 光标位置
 vim.opt.scrolloff = 5

@@ -25,8 +25,12 @@ local function load_theme()
 					vim.o.background = style -- 设置 vim 的 'background' 选项
 				end
 
-				-- 2. 加载主题
-				vim.cmd("colorscheme " .. theme_name)
+				-- 2. 加载主题（主题插件可能未安装/已删除,pcall 防止启动崩溃）
+				local ok, err = pcall(vim.cmd, "colorscheme " .. theme_name)
+				if not ok then
+					vim.notify("主题加载失败,已回退默认主题: " .. tostring(err), vim.log.levels.WARN)
+					vim.cmd("colorscheme default")
+				end
 			end
 		else
 			vim.cmd("colorscheme default")
@@ -98,7 +102,7 @@ local switch_theme = function(opts)
 				actions.select_default:replace(function()
 					local selection = action_state.get_selected_entry()
 					if not selection then
-						vim.notify("未选中主题" .. selection, vim.log.levels.ERROR)
+						vim.notify("未选中主题", vim.log.levels.ERROR)
 						return
 					end
 

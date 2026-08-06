@@ -49,15 +49,20 @@ return {
 			-- vim.notify("已连接 LSP 客户端: " .. client.name, vim.log.levels.INFO)
 			-- 内联提示
 			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-			-- 这里两个禁止lsp的格式化，只是用格式化工具提供的格式化，防止lsp与格式化的冲突
-			client.server_capabilities.documentFormattingProvider = false
-			client.server_capabilities.documentRangeFormattingProvider = false
 		end
+
+		-- 禁用 LSP 自带的格式化,统一交给格式化工具(conform),防止格式化冲突。
+		-- 官方做法:用 handlers 拦截格式化请求(直接改 server_capabilities 是非官方写法,将来可能失效)
+		local disable_formatting_handlers = {
+			["textDocument/formatting"] = function() end,
+			["textDocument/rangeFormatting"] = function() end,
+		}
 
 		-- 配置 nvim-lspconfig 如何处理每个 LSP 服务器 (核心自动化部分)
 		for server_name, server_opts in pairs(servers) do
 			local final_config = vim.tbl_deep_extend("force", server_opts, {
 				on_attach = on_attach,
+				handlers = disable_formatting_handlers,
 			})
 
 			vim.lsp.config(server_name, final_config)

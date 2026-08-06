@@ -1,6 +1,15 @@
 return {
 	"Youthdreamer/obsess",
-	cmd = { "ObsessTimer", "ObsessTimerSec", "ObsessTaskAdd" },
+	cmd = {
+		"ObsessToggle",
+		"ObsessClose",
+		"ObsessTimer",
+		"ObsessTimerSec",
+		"ObsessTaskAdd",
+		"ObsessTaskDone",
+		"ObsessTaskDel",
+		"ObsessTaskClear",
+	},
 	opts = {
 		position = "center",
 		window = {
@@ -13,7 +22,7 @@ return {
 		-- 倒计时结束后的弹窗提醒设置
 		flash = {
 			times = 6, -- 闪烁次数
-			innilterval_ms = 300, -- 每次间隔时间
+			interval_ms = 300, -- 每次间隔时间
 		},
 	},
 
