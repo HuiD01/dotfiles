@@ -11,6 +11,9 @@ function dotsync
     # fish 只同步核心文件（completions/conf.d/functions 是工具自动生成的，不纳入）
     rsync -a --exclude=".DS_Store" \
         ~/.config/fish/config.fish ~/.config/fish/fish_plugins ~/dotfiles/.config/fish/
+    # nvim 同步（排除 .git：本地目录自带仓库历史，不入库）
+    rsync -a --delete --exclude=".git" --exclude=".DS_Store" \
+        ~/.config/nvim/ ~/dotfiles/.config/nvim/
 
     # 2. 提交并推送
     cd ~/dotfiles
