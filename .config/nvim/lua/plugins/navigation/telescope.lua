@@ -15,8 +15,10 @@ return {
 	},
 	config = function()
 		local telescope = require("telescope")
+		local conf = require("telescope.config")
 		telescope.setup({
 			defaults = {
+				sorting_strategy = "ascending", -- 结果紧贴输入框,避免抬头找结果
 				mappings = {
 					i = {
 						["<A-s>"] = require("telescope.actions").file_split,
@@ -28,6 +30,12 @@ return {
 						["<A-t>"] = require("telescope.actions").file_tab,
 						["<A-v>"] = require("telescope.actions").file_vsplit,
 					},
+				},
+			},
+			pickers = {
+				find_files = {
+					-- fzf-native 对中文(CJK)评分很差,文件搜索改用通用子串排序
+					sorter = conf.values.generic_sorter({}),
 				},
 			},
 		})
