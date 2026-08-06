@@ -1,6 +1,7 @@
 [[plugin.deps]]
 use = "boydaihungst/mediainfo"
 rev = "a6d30a1"
+hash = "7d4dd1afcb7ecbd3609c29a82d6dbc5c"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
@@ -66,6 +67,11 @@ hash = "8714306b5cac6359edbacbf545fbd691"
 use = "linxuan-sys/docx-preview"
 rev = "9448288"
 hash = "ccbbca8053585b2e637858dc416e4044"
+
+[[plugin.deps]]
+use = "WhoSowSee/whoosh"
+rev = "0abb062"
+hash = "b6591514a6ef4ae721d8807f7bf641ff"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:dracula"

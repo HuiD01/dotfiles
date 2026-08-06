@@ -5,6 +5,7 @@ local path_sep = package.config:sub(1, 1)
 local DEFAULT_SPECIAL_KEYS = {
   create_temp = "<Enter>",
   fuzzy_search = "<Space>",
+  project_root = "-",
   history = "<Tab>",
   previous_dir = "<Backspace>",
 }
@@ -16,14 +17,6 @@ end
 local function default(value, fallback)
   if value == nil then return fallback end
   return value
-end
-
-local function get_fzf_delimiter()
-  if ya.target_family() == "windows" then
-    return "--delimiter=\\t"
-  else
-    return "--delimiter='\t'"
-  end
 end
 
 local get_hovered_path = ya.sync(function(state)
@@ -136,6 +129,81 @@ local function normalize_path(path)
   end
 
   return normalized_path
+end
+
+local function path_exists(path)
+  if not path or path == "" then
+    return false
+  end
+
+  local cha = fs.cha(Url(path), false)
+  return cha ~= nil
+end
+
+local function paths_equal(left, right)
+  left = normalize_path(left)
+  right = normalize_path(right)
+
+  if ya.target_family() == "windows" then
+    return left:lower() == right:lower()
+  end
+
+  return left == right
+end
+
+local function join_path(base, child)
+  if not base or base == "" then
+    return child
+  end
+  if base:sub(-1) == path_sep then
+    return base .. child
+  end
+  return base .. path_sep .. child
+end
+
+local function parent_path(path)
+  local current = normalize_path(path)
+  if current == "" then
+    return nil
+  end
+
+  if ya.target_family() == "windows" then
+    if current:match("^[A-Za-z]:\\$") then
+      return nil
+    end
+
+    current = current:gsub("[\\/]+$", "")
+    local parent = current:match("^(.*)[\\/][^\\/]+$")
+    if parent and parent ~= "" then
+      if parent:match("^[A-Za-z]:$") then
+        return parent .. "\\"
+      end
+      return parent
+    end
+    return nil
+  end
+
+  if current == "/" then
+    return nil
+  end
+
+  current = current:gsub("/+$", "")
+  local parent = current:match("^(.*)/[^/]+$")
+  if parent == "" then
+    return "/"
+  end
+  return parent
+end
+
+local function find_project_root(path)
+  local current = normalize_path(path)
+  while current and current ~= "" do
+    if path_exists(join_path(current, ".git")) then
+      return current
+    end
+    current = parent_path(current)
+  end
+  return nil
 end
 
 local function apply_home_alias(path)
@@ -536,6 +604,41 @@ local save_to_file = function(mb_path, bookmarks)
   file:close()
 end
 
+--- Run fzf with given args and input lines
+--- @param args string[]
+--- @param input string[]
+--- @return string[]|nil stdout, string|nil error # output lines or nil + error message
+local function run_fzf_with(args, input)
+  local child, err = Command("fzf")
+    :arg(args)
+    :stdin(Command.PIPED)
+    :stdout(Command.PIPED)
+    :stderr(Command.PIPED)
+    :spawn()
+
+  if not child then
+    return nil, "Failed to launch fzf: \n" .. err
+  end
+
+  for _, line in ipairs(input) do
+    child:write_all(line .. "\n")
+  end
+  child:flush()
+
+  local output, err = child:wait_with_output()
+  if not output then
+    return nil, "Error running fzf: \n" .. tostring(err)
+  elseif not output.status.success and #output.stderr > 0 then
+    return nil, "fzf exited with code " .. output.status.code .. ": \n" .. output.stderr
+  end
+
+  local lines = {}
+  for line in output.stdout:gmatch("[^\r\n]+") do
+    table.insert(lines, line)
+  end
+  return lines, nil
+end
+
 -- Unified fzf bookmark picker. opts:
 --   source:    "all" (config + user) or "user" (user only). Default: "all".
 --   multi:     boolean — allow multi-selection (TAB).
@@ -550,69 +653,71 @@ local function run_fzf_picker(opts)
   local temp_bookmarks = get_temp_bookmarks()
   local perm_bookmarks = source == "user" and get_state_attr("bookmarks") or get_all_bookmarks()
 
+  local items = {}
+  local max_tag_w, max_path_w = 0, 0
+
+  local function add_section(bookmarks, prefix, require_full)
+    local arr = {}
+    for _, item in pairs(bookmarks or {}) do
+      if require_full then
+        if item and item.tag and item.path and item.key then table.insert(arr, item) end
+      else
+        table.insert(arr, item)
+      end
+    end
+    sort_bookmarks(arr, "tag", "key", true)
+    for _, item in ipairs(arr) do
+      local tag = prefix .. item.tag
+      local display_path = path_to_desc_for_fzf(item.path)
+      table.insert(items, { tag = tag, path = item.path, key = item.key or "" })
+      max_tag_w = math.max(max_tag_w, get_display_width(tag))
+      max_path_w = math.max(max_path_w, get_display_width(display_path))
+    end
+  end
+
+  if temp_bookmarks and next(temp_bookmarks) then
+    add_section(temp_bookmarks, "[TEMP] ", true)
+  end
+  if perm_bookmarks and next(perm_bookmarks) then
+    add_section(perm_bookmarks, "", false)
+  end
+
   local permit = ui.hide()
-  local temp_file_path = os.tmpname()
-  local temp_file = io.open(temp_file_path, "w")
-  local cmd
 
-  if temp_file then
-    local items = {}
-    local max_tag_w, max_path_w = 0, 0
+  local args = {
+    "--prompt=" .. prompt,
+  }
 
-    local function add_section(bookmarks, prefix, require_full)
-      local arr = {}
-      for _, item in pairs(bookmarks or {}) do
-        if require_full then
-          if item and item.tag and item.path and item.key then table.insert(arr, item) end
-        else
-          table.insert(arr, item)
-        end
-      end
-      sort_bookmarks(arr, "tag", "key", true)
-      for _, item in ipairs(arr) do
-        local tag = prefix .. item.tag
-        local display_path = path_to_desc_for_fzf(item.path)
-        table.insert(items, { tag = tag, path = item.path, key = item.key or "" })
-        max_tag_w = math.max(max_tag_w, get_display_width(tag))
-        max_path_w = math.max(max_path_w, get_display_width(display_path))
-      end
+  if #items > 0 then
+    args = {
+      table.unpack(args),
+      "--delimiter=\t",
+       "--with-nth=1",
+    }
+    if opts.multi then
+      table.insert(args, "--multi")
     end
+  end
 
-    if temp_bookmarks and next(temp_bookmarks) then
-      add_section(temp_bookmarks, "[TEMP] ", true)
-    end
-    if perm_bookmarks and next(perm_bookmarks) then
-      add_section(perm_bookmarks, "", false)
-    end
-
-    if #items > 0 then
-      for _, item in ipairs(items) do
-        local formatted_line = format_bookmark_for_fzf(item.tag, item.path, item.key, max_tag_w, max_path_w)
-        temp_file:write(formatted_line .. "\t" .. item.path .. "\n")
-      end
-      temp_file:close()
-      cmd = string.format("fzf %s%s --with-nth=1 --prompt=\"%s\" < \"%s\"",
-        opts.multi and "--multi " or "", get_fzf_delimiter(), prompt, temp_file_path)
-    else
-      temp_file:close()
-      cmd = string.format("echo %s | fzf --prompt=\"%s\"", empty_msg, prompt)
+  local input = {}
+  if #items > 0 then
+    for _, item in ipairs(items) do
+      local formatted_line = format_bookmark_for_fzf(item.tag, item.path, item.key, max_tag_w, max_path_w)
+      table.insert(input, formatted_line .. "\t" .. item.path)
     end
   else
-    cmd = string.format("echo %s | fzf --prompt=\"%s\"", empty_msg, prompt)
+    table.insert(input, empty_msg)
   end
 
-  local handle = io.popen(cmd, "r")
-  local raw = ""
-  if handle then
-    raw = handle:read("*all") or ""
-    handle:close()
-  end
-
-  if temp_file_path then os.remove(temp_file_path) end
+  local output, err = run_fzf_with(args, input)
   permit:drop()
+  if not output then
+    notify(err, "error", 2)
+    return {}
+  end
 
   local paths = {}
-  for raw_line in raw:gmatch("[^\r\n]+") do
+  for _, raw_line in ipairs(output) do
     local line = string.gsub(raw_line, "^%s*(.-)%s*$", "%1")
     if line ~= "" and line ~= empty_msg then
       local tab_pos = line:find("\t")
@@ -655,37 +760,33 @@ fzf_history = function()
   end
 
   local permit = ui.hide()
-  local temp_file_path = os.tmpname()
-  local temp_file = io.open(temp_file_path, "w")
 
-  if temp_file then
-    for i, path in ipairs(filtered_history) do
-      local display_path = path_to_desc_for_history(path)
-      local formatted_line = string.format("%2d. %s", i, display_path)
-      temp_file:write(formatted_line .. "\t" .. path .. "\n")
+  local args = {
+    "--delimiter=\t",
+    "--with-nth=1",
+    "--prompt=History > ",
+  }
+
+  local input = {}
+  for i, path in ipairs(filtered_history) do
+    local display_path = path_to_desc_for_history(path)
+    local formatted_line = string.format("%2d. %s", i, display_path)
+    table.insert(input, formatted_line .. "\t" .. path)
+  end
+
+  local output, err = run_fzf_with(args, input)
+  permit:drop()
+  if not output then
+    notify(err, "error", 2)
+    return nil
+  end
+
+  if #output > 0 then
+    local result = output[1]:gsub("^%s*(.-)%s*$", "%1")
+    local tab_pos = result:find("\t")
+    if tab_pos then
+      return result:sub(tab_pos + 1)
     end
-    temp_file:close()
-
-    local cmd = string.format("fzf %s --with-nth=1 --prompt=\"History > \" < \"%s\"",
-      get_fzf_delimiter(), temp_file_path)
-    local handle = io.popen(cmd, "r")
-    local result = ""
-    if handle then
-      result = string.gsub(handle:read("*all") or "", "^%s*(.-)%s*$", "%1")
-      handle:close()
-    end
-
-    os.remove(temp_file_path)
-    permit:drop()
-
-    if result and result ~= "" then
-      local tab_pos = result:find("\t")
-      if tab_pos then
-        return result:sub(tab_pos + 1)
-      end
-    end
-  else
-    permit:drop()
   end
 
   return nil
@@ -694,6 +795,8 @@ end
 local create_special_menu_items = function()
   local special_items = {}
   local special_keys = get_state_attr("special_keys") or DEFAULT_SPECIAL_KEYS
+  local current_path = normalize_path(get_current_dir_path())
+
   local create_temp_key = special_keys.create_temp
   if create_temp_key then
     table.insert(special_items, { desc = "Create temporary bookmark", on = create_temp_key, path = "__CREATE_TEMP__" })
@@ -706,7 +809,6 @@ local create_special_menu_items = function()
 
   local current_tab = get_current_tab_idx()
   local history = get_tab_history(current_tab)
-  local current_path = normalize_path(get_current_dir_path())
 
   local filtered_history = {}
   if history then
@@ -727,6 +829,18 @@ local create_special_menu_items = function()
     local previous_dir = filtered_history[1]
     local display_path = path_to_desc(previous_dir)
     table.insert(special_items, { desc = "<- " .. display_path, on = previous_dir_key, path = previous_dir })
+  end
+
+  local project_root_key = special_keys.project_root
+  if project_root_key then
+    local project_root = find_project_root(current_path)
+    if project_root and not paths_equal(project_root, current_path) then
+      table.insert(special_items, {
+        desc = "Project root",
+        on = project_root_key,
+        path = project_root,
+      })
+    end
   end
 
   return special_items
