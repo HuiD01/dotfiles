@@ -118,7 +118,7 @@ if [ -n "$SSH_CONNECTION" ] && command -v curl >/dev/null 2>&1 && \
      http://www.gstatic.com/generate_204; then
     export http_proxy=http://127.0.0.1:7897
     export https_proxy=http://127.0.0.1:7897
-    echo "Local proxy tunnel detected, proxy mode auto-enabled"
+    echo "proxy mode auto-enabled"
 fi
 
 # aliases
