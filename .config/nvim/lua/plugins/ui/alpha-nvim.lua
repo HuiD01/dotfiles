@@ -42,6 +42,7 @@ return {
 		end
 		dashboard.section.header.opts.hl = "AlphaHeader"
 		dashboard.section.buttons.opts.hl = "AlphaButtons"
+		dashboard.section.buttons.opts.spacing = 0 -- 去掉按钮间的空行,让 j/k 一次按键移动一个按钮
 		dashboard.section.footer.opts.hl = "AlphaFooter"
 		dashboard.opts.layout[1].val = 4
 		return dashboard

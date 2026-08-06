@@ -1,6 +1,10 @@
 local map = vim.keymap.set
 vim.g.mapleader = " "
 
+-- 修复 which-key v3:双击空格走"无映射"取消路径会临时移除触发映射并重喂按键,
+-- 导致下一次按空格没反应。给 <space><space> 一个真实的 <Nop> 映射,双击即干净关闭
+map("n", "<leader><leader>", "<Nop>", { desc = "关闭菜单" })
+
 map("n", "<leader>T", "<cmd>ThemeSwitch theme=dropdown<cr>", { silent = true, desc = "主题切换" })
 
 map("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
