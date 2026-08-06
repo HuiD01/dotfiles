@@ -17,11 +17,6 @@ return {
 		dashboard.section.header.val = vim.split(logo, "\n")
 		dashboard.section.buttons.val = {
 			dashboard.button(
-				"p",
-				" " .. " 查看项目",
-				"<cmd>Telescope projects layout_config={height=0.6,width=0.6}<cr>"
-			),
-			dashboard.button(
 				"f",
 				"󰍉 " .. " 查找文件",
 				"<cmd>Telescope find_files theme=dropdown previewer=false layout_config={height=0.3}<cr>"

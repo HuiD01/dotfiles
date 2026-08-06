@@ -108,7 +108,7 @@ local servers = {
 		},
 	},
 	-- typst
-	tinymist = {},
+	-- tinymist = {}, -- 已移除:不用 Typst
 	-- Nix
 	-- ["nil_ls"] = {},
 	-- Go

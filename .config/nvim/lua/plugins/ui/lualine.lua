@@ -5,7 +5,7 @@ return {
 		options = {
 			component_separators = "",
 			disabled_filetypes = {
-				statusline = { "dashboard", "alpha", "starter", "neo-tree", "mini-files", "dap-repl" },
+				statusline = { "dashboard", "alpha", "starter", "neo-tree", "dap-repl" },
 				winbar = { "aerial", "dap-repl", "neotest-summary" },
 			},
 			globalstatus = true,

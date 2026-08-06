@@ -12,7 +12,6 @@ return {
 			"nvim-telescope/telescope-fzf-native.nvim",
 			build = "make",
 		},
-		"DrKJeff16/project.nvim",
 	},
 	config = function()
 		local telescope = require("telescope")
@@ -34,13 +33,10 @@ return {
 		})
 
 		telescope.load_extension("fzf")
-		-- project.nvim 的扩展:用 pcall 保护,避免循环依赖或加载顺序问题导致崩溃
-		pcall(telescope.load_extension, "projects")
 		telescope.load_extension("file_browser")
 		telescope.load_extension("live_grep_args")
 	end,
 	keys = {
-		{ "<leader>fp", "<cmd>Telescope projects layout_config={height=0.6,width=0.6}<cr>", desc = "切换项目" }, -- project.nvim 的Telescope扩展
 		{
 			"<leader>ff",
 			"<cmd>Telescope find_files theme=dropdown previewer=false layout_config={height=0.3}<cr>",
