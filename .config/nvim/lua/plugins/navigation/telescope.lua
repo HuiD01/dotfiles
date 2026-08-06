@@ -34,7 +34,8 @@ return {
 		})
 
 		telescope.load_extension("fzf")
-		telescope.load_extension("projects")
+		-- project.nvim 的扩展:用 pcall 保护,避免循环依赖或加载顺序问题导致崩溃
+		pcall(telescope.load_extension, "projects")
 		telescope.load_extension("file_browser")
 		telescope.load_extension("live_grep_args")
 	end,
