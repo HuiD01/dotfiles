@@ -18,6 +18,9 @@ function dotsync
     # nvim 同步（排除 .git：本地目录自带仓库历史，不入库）
     rsync -a --delete --exclude=".git" --exclude=".DS_Store" \
         ~/.config/nvim/ ~/dotfiles/.config/nvim/
+    # starship 同步（含 yazi 专用提示符配置）
+    rsync -a --exclude=".DS_Store" \
+        ~/.config/starship.toml ~/.config/starship_yazi.toml ~/dotfiles/.config/starship/
 
     # 2. 提交并推送
     cd ~/dotfiles
