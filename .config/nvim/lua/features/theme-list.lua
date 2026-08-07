@@ -55,7 +55,7 @@ M.colorschemes = {
 	["rose-pine-dawn"] = {},
 
 	-- monokai-pro-nvim主题
-	["monokai-pro-default"] = {},
+	["monokai-pro"] = {}, -- default 变体即主主题(monokai-pro-default 是无效名)
 	["monokai-pro-ristretto"] = {},
 	["monokai-pro-classic"] = {},
 	["monokai-pro-light"] = {},
