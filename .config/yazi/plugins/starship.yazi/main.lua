@@ -225,7 +225,8 @@ return {
         local outputs = { left = "", right = "" }
         local output_left = command_left:output()
         if output_left then
-            outputs.left = output_left.stdout:gsub("^%s+", "")
+            -- starship 1.26+ 在输出开头附带 \x1b[J（清屏转义）+ 换行，会截断提示符本体，这里一并剔除
+            outputs.left = output_left.stdout:gsub("^\27%[J%s*", ""):gsub("^%s+", "")
         end
 
         -- If support for right prompt is enabled, execute right prompt command and save output
@@ -233,7 +234,7 @@ return {
         if show_right_prompt then
             local output_right = command_right:output()
             if output_right then
-                outputs.right = output_right.stdout:gsub("^%s+", "")
+                outputs.right = output_right.stdout:gsub("^\27%[J%s*", ""):gsub("^%s+", "")
             end
         end
 

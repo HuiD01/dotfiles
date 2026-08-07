@@ -1,6 +1,9 @@
 require("full-border"):setup()
 
--- require("starship"):setup()
+require("starship"):setup({
+  -- 用 yazi 专用配置：继承 starship.toml 全部样式，但去掉 \n$character 换行提示符
+  config_file = "~/.config/starship_yazi.toml",
+})
 
 require("simple-status"):setup()
 

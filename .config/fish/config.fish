@@ -2,6 +2,10 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
+# 常用命令别名
+alias cc claude
+alias nv nvim
+
 # dotfiles 管理：镜像目录方案
 # 改完配置后执行 dotsync：拷贝配置到 ~/dotfiles 并推送 GitHub
 function dotsync
@@ -64,3 +68,6 @@ function y
 	end
 	rm -f -- "$tmp"
 end
+
+#starship
+starship init fish | source
