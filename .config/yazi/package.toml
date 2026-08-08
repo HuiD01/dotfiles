@@ -4,11 +4,6 @@ rev = "a6d30a1"
 hash = "7d4dd1afcb7ecbd3609c29a82d6dbc5c"
 
 [[plugin.deps]]
-use = "yazi-rs/plugins:full-border"
-rev = "4ffa48f"
-hash = "eff8ff12fa4e5f035a10d8aeeb4c258d"
-
-[[plugin.deps]]
 use = "yazi-rs/plugins:mount"
 rev = "4ffa48f"
 hash = "77e20b071404f97c09d3f9afdb9482e0"

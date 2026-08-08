@@ -19,7 +19,7 @@ count_cut      = { fg = "#2d3d4e", bg = "#e4eaf2" }
 count_selected = { fg = "#3d5270", bg = "#d6e2f0" }
 
 # Border
-border_symbol = "│"
+border_symbol = " "
 border_style  = { fg = "#b8cde0" }
 
 # : ]]]
@@ -29,6 +29,7 @@ border_style  = { fg = "#b8cde0" }
 
 [indicator]
 padding = { open = "█", close = "█" }
+preview = { bg = "#455568", underline = false }
 
 # : ]]]
 
