@@ -4,8 +4,11 @@ if vim.g.neovide then
 	local state_file = vim.fn.stdpath("data") .. "/neovide_transparency" -- 透明度参数存储位置
 	local f = io.open(state_file, "r")
 	if f then
-		vim.g.neovide_opacity = tonumber(f:read("*l")) or 1
+		vim.g.neovide_opacity = tonumber(f:read("*l")) or 0.88
 		f:close()
+	else
+		-- 无状态文件时默认透明
+		vim.g.neovide_opacity = 0.88
 	end
 	vim.api.nvim_create_user_command("TransparentToggle", function()
 		local next = (vim.g.neovide_opacity == 1.0) and 0.88 or 1.0
