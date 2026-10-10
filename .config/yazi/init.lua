@@ -106,3 +106,10 @@ require("gvfs"):setup({
 require("recycle-bin"):setup()
 
 require("duckdb"):setup()
+
+-- 内置 zoxide 插件：按 Z 用 zoxide+fzf 模糊跳转目录
+require("zoxide"):setup {
+  -- 在 yazi 内部切换目录时，也把该目录写进 zoxide 数据库，
+  -- 这样 yazi 里逛过的路径在 shell 里也能 z 到，反之亦然。
+  update_db = true,
+}

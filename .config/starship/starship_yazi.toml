@@ -1,11 +1,13 @@
-# yazi 头部专用 starship 配置
-# ⚠️ 本版本 starship(1.26) 不支持 include 合并，样式需与 starship.toml 保持同步
-# 与主配置的差异：format 为单行（无 \n$character），无 [character]/[status] 段
+# Yazi header-only Starship configuration.
+# Keep module styles synchronized with starship.toml.
+# The Yazi variant stays on one line and omits the character/status modules.
 
 "$schema" = 'https://starship.rs/config-schema.json'
 
+add_newline = false
+
 format = """
-[▓▒░](fg:#a3aed2 bg:#4a5578)\
+[▓░](fg:#5E81AC bg:#D8DEE9)\
 $os\
 $username\
 $directory\
@@ -19,7 +21,7 @@ $php\
 $time"""
 
 [directory]
-style = "fg:#e3e5e5 bg:#769ff0"
+style = "fg:#ECEFF4 bg:#4C566A"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -32,46 +34,46 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:#4C566A"
+format = '[[ $symbol $branch ](fg:#ECEFF4 bg:#4C566A)]($style)'
 
 [git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:#4C566A"
+format = '[[($all_status$ahead_behind )](fg:#ECEFF4 bg:#4C566A)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:#434C5E"
+format = '[[ $symbol ($version) ](fg:#ECEFF4 bg:#434C5E)]($style)'
 
 [bun]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:#434C5E"
+format = '[[ $symbol ($version) ](fg:#ECEFF4 bg:#434C5E)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:#434C5E"
+format = '[[ $symbol ($version) ](fg:#ECEFF4 bg:#434C5E)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:#434C5E"
+format = '[[ $symbol ($version) ](fg:#ECEFF4 bg:#434C5E)]($style)'
 
 [php]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:#434C5E"
+format = '[[ $symbol ($version) ](fg:#ECEFF4 bg:#434C5E)]($style)'
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#48434e"
-format = '[[  $time ](fg:#c4bfcc bg:#48434e)]($style)'
+time_format = "%R"
+style = "bg:#D8DEE9"
+format = '[[ $time ](fg:#2E3440 bg:#D8DEE9)]($style)'
 
 [os]
-style = "bg:#4a5578 fg:#e3e5e5"
+style = "bg:#D8DEE9 fg:#2E3440"
 format = "[ $symbol ]($style)"
 disabled = false
 
@@ -101,6 +103,6 @@ Pop = ""
 
 [username]
 show_always = true
-style_user = "bg:#c9d6f2 fg:#090c0c"
-style_root = "bg:#ff6b6b fg:#090c0c"
+style_user = "bg:#D8DEE9 fg:#2E3440"
+style_root = "bg:#BF616A fg:#ECEFF4"
 format = "[ $user ]($style)"
