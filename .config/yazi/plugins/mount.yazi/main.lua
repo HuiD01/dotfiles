@@ -1,4 +1,4 @@
---- @since 25.12.29
+--- @since 26.5.6
 
 local toggle_ui = ya.sync(function(self)
 	if self.children then
@@ -10,9 +10,12 @@ local toggle_ui = ya.sync(function(self)
 	ui.render()
 end)
 
-local subscribe = ya.sync(function(self)
+local subscribe = ya.sync(function()
 	ps.unsub("mount")
-	ps.sub("mount", function() ya.emit("plugin", { self._id, "refresh" }) end)
+	ps.sub("mount", function()
+		-- TODO: use `ya.async()`
+		ya.emit("plugin", { "mount", "refresh" })
+	end)
 end)
 
 local update_partitions = ya.sync(function(self, partitions)
@@ -50,6 +53,7 @@ local M = {
 		{ on = "u", run = "unmount" },
 		{ on = "e", run = "eject" },
 	},
+	permit = table.pack(ya.chan("mpsc", 1)),
 }
 
 function M:new(area)
@@ -90,8 +94,13 @@ function M:entry(job)
 	local tx1, rx1 = ya.chan("mpsc")
 	local tx2, rx2 = ya.chan("mpsc")
 	function producer()
+		self.permit[1]:send(true)
 		while true do
-			local cand = self.keys[ya.which { cands = self.keys, silent = true }] or { run = {} }
+			self.permit[2]:recv()
+			local idx = ya.which { cands = self.keys, silent = true }
+			self.permit[1]:send(true)
+
+			local cand = self.keys[idx] or { run = {} }
 			for _, r in ipairs(type(cand.run) == "table" and cand.run or { cand.run }) do
 				tx1:send(r)
 				if r == "quit" then
@@ -155,13 +164,24 @@ function M:redraw()
 		end
 	end
 
+	-- TODO: remove
+	local function rounded(b)
+		if th.input.border_set then
+			b:set("rounded")
+		else
+			b:type(ui.Border.ROUNDED)
+		end
+		return b
+	end
+
 	return {
 		ui.Clear(self._area),
-		ui.Border(ui.Edge.ALL)
-			:area(self._area)
-			:type(ui.Border.ROUNDED)
-			:style(ui.Style():fg("blue"))
-			:title(ui.Line("Mount"):align(ui.Align.CENTER)),
+		rounded(
+			ui.Border(ui.Edge.ALL)
+				:area(self._area)
+				:style(ui.Style():fg("blue"))
+				:title(ui.Line("Mount"):align(ui.Align.CENTER))
+		),
 		ui.Table(rows)
 			:area(self._area:pad(ui.Pad(1, 2, 1, 2)))
 			:header(ui.Row({ "Src", "Label", "Dist", "FSType" }):style(ui.Style():bold()))

@@ -83,8 +83,6 @@ cask "buzz"
 cask "cc-switch"
 # Desktop client that supports multiple LLM providers
 cask "cherry-studio"
-# Terminal-based AI coding assistant
-cask "claude-code"
 # Privacy-first clipboard manager
 cask "yuzeguitarist/deck/deckclip"
 cask "font-hack-nerd-font"
@@ -102,7 +100,6 @@ cask "notion"
 cask "pearcleaner"
 # Open-source code editor
 cask "visual-studio-code"
-vscode "anthropic.claude-code"
 vscode "dbaeumer.vscode-eslint"
 vscode "ms-python.debugpy"
 vscode "ms-python.python"

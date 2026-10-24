@@ -6,53 +6,10 @@ require("starship"):setup({
 require("simple-status"):setup()
 
 
-require("whoosh"):setup {
-  -- Configuration bookmarks (cannot be deleted through plugin)
-  bookmarks = bookmarks,
-
-  -- Notification settings
-  jump_notify = false,
-
-  -- Key generation for auto-assigning bookmark keys
-  keys = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-
-  -- Configure the built-in menu action hotkeys
-  -- false - hide menu item
-  special_keys = {
-    create_temp = "<Enter>",         -- Create a temporary bookmark from the menu
-    fuzzy_search = "<Space>",        -- Launch fuzzy search (fzf)
-    history = "<Tab>",               -- Open directory history
-    previous_dir = "<Backspace>",    -- Jump back to the previous directory
-  },
-
-  -- File path for storing user bookmarks
-  bookmarks_path = (ya.target_family() == "windows" and os.getenv("APPDATA") .. "\\yazi\\config\\plugins\\whoosh.yazi\\bookmarks") or
-         (os.getenv("HOME") .. "/.config/yazi/plugins/whoosh.yazi/bookmarks"),
-
-  -- Replace home directory with "~"
-  home_alias_enabled = true,                            -- Toggle home aliasing in displays
-
-  -- Path truncation in navigation menu
-  path_truncate_enabled = false,                        -- Enable/disable path truncation
-  path_max_depth = 3,                                   -- Maximum path depth before truncation
-
-  -- Path truncation in fuzzy search (fzf)
-  fzf_path_truncate_enabled = false,                    -- Enable/disable path truncation in fzf
-  fzf_path_max_depth = 5,                               -- Maximum path depth before truncation in fzf
-
-  -- Long folder name truncation
-  path_truncate_long_names_enabled = false,             -- Enable in navigation menu
-  fzf_path_truncate_long_names_enabled = false,         -- Enable in fzf
-  path_max_folder_name_length = 20,                     -- Max length in navigation menu
-  fzf_path_max_folder_name_length = 20,                 -- Max length in fzf
-
-  -- History directory settings
-  history_size = 10,                                    -- Number of directories in history (default 10)
-  history_fzf_path_truncate_enabled = false,            -- Enable/disable path truncation by depth for history
-  history_fzf_path_max_depth = 5,                       -- Maximum path depth before truncation for history (default 5)
-  history_fzf_path_truncate_long_names_enabled = false, -- Enable/disable long folder name truncation for history
-  history_fzf_path_max_folder_name_length = 30,         -- Maximum length for folder names in history (default 30)
-}
+require("yamb"):setup({
+  -- 每次跳转后弹提示
+  jump_notify = true,
+})
 
 
 require("gvfs"):setup({
@@ -103,8 +60,6 @@ require("gvfs"):setup({
   -- root_mountpoint = (os.getenv("XDG_RUNTIME_DIR") or ("/run/user/" .. ya.uid())) .. "/gvfs"
 })
 
-require("recycle-bin"):setup()
-
 require("duckdb"):setup()
 
 -- 内置 zoxide 插件：按 Z 用 zoxide+fzf 模糊跳转目录
@@ -113,3 +68,5 @@ require("zoxide"):setup {
   -- 这样 yazi 里逛过的路径在 shell 里也能 z 到，反之亦然。
   update_db = true,
 }
+
+-- 说明：上游 init.lua 中的 require("full-border"):setup() 未启用（纯外观，保持本地现有边框样式）。
