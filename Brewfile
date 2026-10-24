@@ -65,6 +65,8 @@ brew "ripgrep"
 brew "sevenzip"
 # Enables extra languages support for Tesseract
 brew "tesseract-lang"
+# markup-based typesetting system that is powerful and easy to learn
+brew "typst"
 # Vi 'workalike' with many additional features
 brew "vim"
 # Blazing fast terminal file manager written in Rust, based on async I/O
