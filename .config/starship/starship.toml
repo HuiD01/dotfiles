@@ -3,7 +3,6 @@
 add_newline = false
 
 format = """
-[▓░](fg:#5E81AC bg:#D8DEE9)\
 $os\
 $username\
 $directory\
@@ -16,7 +15,6 @@ $golang\
 $php\
 $status\
 $time\
-[░▓](fg:#5E81AC bg:#D8DEE9)\
 \n$character"""
 
 [directory]

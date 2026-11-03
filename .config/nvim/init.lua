@@ -1,11 +1,17 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
+-- 自定义全局变量Cook
+-- _G.Cook = {}
 
--- 切换 buffer / 失焦时自动保存
-vim.opt.autowriteall = true
+-- 核心基础配置
+require("core.autocmd")
+require("core.basic")
+require("core.keymap")
+require("core.lazy") -- 加载Lazy.nvim
 
--- HTML 浏览器实时预览（:HtmlPreview）
-require("config.html_preview")
+-- 功能配置
+require("features.switch-theme").setup() -- 安装主题后应该在features文件夹下的theme-list.lua主题列表维护
 
--- 中文输入法兜底：普通模式下把全角标点当英文用
-require("config.ime")
+--检测是否是neovide启动，使用neovide配置
+if vim.g.neovide then
+	require("neovide.basic")
+	require("neovide.keymap")
+end

@@ -7,7 +7,6 @@
 add_newline = false
 
 format = """
-[▓░](fg:#5E81AC bg:#D8DEE9)\
 $os\
 $username\
 $directory\
