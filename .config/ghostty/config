@@ -1,0 +1,157 @@
+# ~/.config/ghostty/config
+
+theme = GitHub Dark Nvim
+font-family = JetBrainsMono Nerd Font
+font-size = 25
+# 文字与窗口边框的间距
+# 格式：window-padding-x = 左,右   window-padding-y = 上,下
+# 左边(38)略大于右边(34)：内容左对齐、右侧参差不齐，右留白看起来会偏大
+window-padding-x = 45,45
+# 上边(14)明显小于下边(34)：顶部已有透明标题栏占位，底部又常贴着提示符
+window-padding-y = 20,40
+# 把右侧/底部剩余的零头空间均分到四周，让文字更居中
+window-padding-balance = true
+
+# 毛玻璃：半透明背景 + 背景模糊
+background-opacity = 1.0
+background-blur = false
+
+shell-integration-features = no-cursor
+macos-titlebar-style = transparent
+macos-titlebar-proxy-icon = hidden
+macos-window-shadow = false
+window-decoration = auto
+
+# 强制窗口标题为空（一个空格），忽略程序写入的标题
+title = " "
+
+# 关闭程序运行时的蓝色进度条（OSC 9;4）
+progress-style = false
+
+# --- Quick Terminal ---
+quick-terminal-position = bottom
+quick-terminal-size = 40%
+quick-terminal-autohide = true
+
+# --- Cursor ---
+cursor-style = block
+cursor-style-blink = true
+cursor-click-to-move = true
+cursor-opacity = 1.0
+
+# 光标柔光拖尾（Neovide 风）
+##custom-shader = shaders/cursor_warp.glsl
+##custom-shader-animation = always
+
+# --- Keybindings ---
+# 说明：Ghostty 的原生标签在 AeroSpace 下不可用（macOS 原生标签 = 独立窗口，API 限制，修不好）
+#      故标签层与并排层整体交给 tmux。
+#      下面所有 text:\x01X 的意思是"替你按下 Ctrl-a，再按 X"——直接发字节给 tmux。
+#      因为是字节，ssh 到远程后同样生效。
+
+# ── 分屏 → tmux 面板 ──
+keybind = super+d=text:\x01|
+keybind = super+shift+d=text:\x01-
+
+# ── 面板导航 → tmux 面板 ──
+keybind = super+[=text:\x01;
+keybind = super+]=text:\x01o
+keybind = super+alt+arrow_left=text:\x01h
+keybind = super+alt+arrow_right=text:\x01l
+keybind = super+alt+arrow_up=text:\x01k
+keybind = super+alt+arrow_down=text:\x01j
+
+# ── 面板大小 → tmux（大写 HJKL，对应 tmux 侧 resize-pane）──
+keybind = super+ctrl+arrow_left=text:\x01H
+keybind = super+ctrl+arrow_right=text:\x01L
+keybind = super+ctrl+arrow_up=text:\x01K
+keybind = super+ctrl+arrow_down=text:\x01J
+
+# ── 面板最大化 → tmux zoom ──
+keybind = super+shift+enter=text:\x01z
+
+# ── 标签 → tmux 窗口 ──
+keybind = super+t=text:\x01c
+keybind = super+w=close_surface
+keybind = super+shift+w=close_window
+keybind = ctrl+tab=text:\x01n
+keybind = ctrl+shift+tab=text:\x01p
+# 注意：Ghostty 把 super+1 和 super+digit_1 当作两个不同的触发器，
+#      自带默认值用的是 digit_N，故两种写法都绑，确保物理按键命中
+keybind = super+digit_1=text:\x011
+keybind = super+1=text:\x011
+keybind = super+digit_2=text:\x012
+keybind = super+2=text:\x012
+keybind = super+digit_3=text:\x013
+keybind = super+3=text:\x013
+keybind = super+digit_4=text:\x014
+keybind = super+4=text:\x014
+keybind = super+digit_5=text:\x015
+keybind = super+5=text:\x015
+keybind = super+digit_6=text:\x016
+keybind = super+6=text:\x016
+keybind = super+digit_7=text:\x017
+keybind = super+7=text:\x017
+keybind = super+digit_8=text:\x018
+keybind = super+8=text:\x018
+keybind = super+digit_9=text:\x019
+keybind = super+9=text:\x019
+keybind = super+shift+[=text:\x01p
+keybind = super+shift+]=text:\x01n
+
+# Fullscreen
+keybind = super+enter=toggle_fullscreen
+keybind = super+ctrl+f=toggle_fullscreen
+
+# Font size
+keybind = super+plus=increase_font_size:1
+keybind = super+equal=increase_font_size:1
+keybind = super+minus=decrease_font_size:1
+keybind = super+0=reset_font_size
+
+# Copy / Paste / Selection
+keybind = super+c=copy_to_clipboard:mixed
+keybind = super+v=paste_from_clipboard
+keybind = super+shift+v=paste_from_selection
+
+# Selection adjustment
+keybind = shift+arrow_left=adjust_selection:left
+keybind = shift+arrow_right=adjust_selection:right
+keybind = shift+arrow_up=adjust_selection:up
+keybind = shift+arrow_down=adjust_selection:down
+
+# Search
+keybind = super+f=start_search
+keybind = super+e=search_selection
+keybind = super+shift+f=end_search
+keybind = performable:escape=end_search
+keybind = super+g=navigate_search:next
+keybind = super+shift+g=navigate_search:previous
+
+# Scrolling
+keybind = super+home=scroll_to_top
+keybind = super+end=scroll_to_bottom
+keybind = super+page_up=scroll_page_up
+keybind = super+page_down=scroll_page_down
+
+# Prompt jump
+keybind = super+arrow_up=jump_to_prompt:-1
+keybind = super+arrow_down=jump_to_prompt:1
+
+# Quick Terminal
+keybind = global:super+backquote=toggle_quick_terminal
+
+# Misc
+keybind = super+shift+comma=reload_config
+keybind = super+comma=open_config
+keybind = super+k=clear_screen
+keybind = super+a=select_all
+keybind = super+shift+p=toggle_command_palette
+keybind = super+alt+i=inspector:toggle
+
+# macOS line editing (like native text fields)
+keybind = super+arrow_left=text:\x01
+keybind = super+arrow_right=text:\x05
+keybind = super+backspace=text:\x15
+keybind = alt+arrow_left=esc:b
+keybind = alt+arrow_right=esc:f

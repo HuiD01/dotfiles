@@ -16,16 +16,26 @@ function dotsync
     # fish 只同步核心文件（completions/conf.d/functions 是工具自动生成的，不纳入）
     rsync -a --exclude=".DS_Store" \
         ~/.config/fish/config.fish ~/.config/fish/fish_plugins ~/dotfiles/.config/fish/
+    # 自定义提示符是手写配置，单独纳入
+    mkdir -p ~/dotfiles/.config/fish/functions
+    rsync -a ~/.config/fish/functions/fish_prompt.fish \
+        ~/dotfiles/.config/fish/functions/
     # nvim 同步（排除 .git：本地目录自带仓库历史，不入库）
     rsync -a --delete --exclude=".git" --exclude=".DS_Store" \
         ~/.config/nvim/ ~/dotfiles/.config/nvim/
     # tmux 同步（含快捷键速查文档 KEYBINDINGS.md）
     rsync -a --delete --exclude=".DS_Store" \
         ~/.config/tmux/ ~/dotfiles/.config/tmux/
-    # starship 同步（含 yazi 专用提示符配置）
-    rsync -a --exclude=".DS_Store" \
-        ~/.config/starship.toml ~/.config/starship_yazi.toml ~/dotfiles/.config/starship/
-
+    # kitty：排除运行状态和主题选择器自动备份
+    rsync -a --delete --exclude=".DS_Store" --exclude="*.bak" \
+        --exclude=".cursor-power-state" \
+        ~/.config/kitty/ ~/dotfiles/.config/kitty/
+    # ghostty
+    rsync -a --delete --exclude=".DS_Store" --exclude="*.bak" \
+        ~/.config/ghostty/ ~/dotfiles/.config/ghostty/
+    # AeroSpace 与登录静默标记
+    rsync -a ~/.aerospace.toml ~/dotfiles/.aerospace.toml
+    rsync -a ~/.hushlogin ~/dotfiles/.hushlogin
     # 2. 提交并推送
     cd ~/dotfiles
     git add -A
@@ -76,5 +86,3 @@ function y
 	rm -f -- "$tmp"
 end
 
-#starship
-starship init fish | source

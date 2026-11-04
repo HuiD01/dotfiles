@@ -14,6 +14,7 @@ local function load_theme()
 	if file then
 		local data = file:read("*a")
 		file:close()
+		data = vim.trim(data)
 
 		-- 解析保存的数据
 		if data and data ~= "" then

@@ -14,11 +14,6 @@ rev = "e0bbd20"
 hash = "ba1a606728adb75b091b6eaf3fd60372"
 
 [[plugin.deps]]
-use = "Rolv-Apneseth/starship"
-rev = "ea92cf4"
-hash = "9776f378459072b6c2875eae5addc49d"
-
-[[plugin.deps]]
 use = "Ape/simple-status"
 rev = "d0da104"
 hash = "68603fdd1dcaf415227e2c77a9317947"

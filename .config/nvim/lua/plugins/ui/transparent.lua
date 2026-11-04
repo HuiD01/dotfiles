@@ -22,67 +22,51 @@ else
 	return {
 		"xiyaowong/transparent.nvim",
 		config = function()
-			vim.g.transparent_enabled = true
-				local function selected_buffer_groups()
-					local groups = {
-						BufferLineBufferSelected = true,
-						BufferLineCloseButtonSelected = true,
-						BufferLineModifiedSelected = true,
-						BufferLineNumbersSelected = true,
-						BufferLineDiagnosticSelected = true,
-					}
-					for _, group in ipairs(vim.fn.getcompletion("BufferLine", "highlight")) do
-						if group:find("Selected", 1, true) then
-							groups[group] = true
-						end
-					end
-					return vim.tbl_keys(groups)
-				end
-				local function emphasize_current_buffer()
-					local highlight = {
-						fg = 0x141415,
-						bg = 0xe8e4dc,
-						bold = true,
-					}
-					for _, group in ipairs(selected_buffer_groups()) do
-						local attrs = vim.tbl_extend("force", highlight, {
-							underline = false,
-						})
-						vim.api.nvim_set_hl(0, group, attrs)
+			vim.g.transparent_enabled = false
+			local function selected_buffer_groups()
+				local groups = {
+					BufferLineBufferSelected = true,
+					BufferLineCloseButtonSelected = true,
+					BufferLineModifiedSelected = true,
+					BufferLineNumbersSelected = true,
+					BufferLineDiagnosticSelected = true,
+				}
+				for _, group in ipairs(vim.fn.getcompletion("BufferLine", "highlight")) do
+					if group:find("Selected", 1, true) then
+						groups[group] = true
 					end
 				end
+				return vim.tbl_keys(groups)
+			end
+			local function emphasize_current_buffer()
+				local highlight = {
+					fg = 0x141415,
+					bg = 0xe8e4dc,
+					bold = true,
+				}
+				for _, group in ipairs(selected_buffer_groups()) do
+					local attrs = vim.tbl_extend("force", highlight, {
+						underline = false,
+					})
+					vim.api.nvim_set_hl(0, group, attrs)
+				end
+			end
 			require("transparent").setup({
 				extra_groups = {
 					"NormalFloat",
 					"NvimTreeNormal",
 					"TelescopeNormal",
 				},
-					exclude_groups = selected_buffer_groups,
 			})
-			require("transparent").clear()
-				require("transparent").clear_prefix("BufferLine")
-				emphasize_current_buffer()
-				local group = vim.api.nvim_create_augroup("cookvim_bufferline_emphasis", { clear = true })
-				vim.api.nvim_create_autocmd("User", {
-					group = group,
-					pattern = "TransparentClear",
-					callback = emphasize_current_buffer,
-				})
-				vim.api.nvim_create_autocmd("User", {
-					group = group,
-					pattern = "LazyFile",
-					callback = function()
-						vim.schedule(emphasize_current_buffer)
-					end,
-				})
-			require("transparent").clear_prefix("TabLine")
-			-- require("transparent").clear_prefix("WildMenu") -- possibly not necessary
-
-			-- Lualine
-			-- require("transparent").clear_prefix("lualine")
-
-			-- Neo-tree
-			require("transparent").clear_prefix("NeoTree")
+			emphasize_current_buffer()
+			local group = vim.api.nvim_create_augroup("cookvim_bufferline_emphasis", { clear = true })
+			vim.api.nvim_create_autocmd("User", {
+				group = group,
+				pattern = "LazyFile",
+				callback = function()
+					vim.schedule(emphasize_current_buffer)
+				end,
+			})
 		end,
 	}
 end
