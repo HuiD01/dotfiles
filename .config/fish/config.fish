@@ -31,7 +31,7 @@ function dotsync
         --exclude=".cursor-power-state" \
         ~/.config/kitty/ ~/dotfiles/.config/kitty/
     # ghostty
-    rsync -a --delete --exclude=".DS_Store" --exclude="*.bak" \
+    rsync -a --delete --exclude=".git" --exclude=".DS_Store" --exclude="*.bak" \
         ~/.config/ghostty/ ~/dotfiles/.config/ghostty/
     # AeroSpace 与登录静默标记
     rsync -a ~/.aerospace.toml ~/dotfiles/.aerospace.toml
