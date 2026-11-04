@@ -7,6 +7,9 @@ alias nv nvim
 # CS61A 的 ok 里打包的 lark 依赖 sre_parse，Python 3.15 已移除该模块 → 固定用 3.13
 alias py python3.13
 
+# Fish 命令输入参数颜色
+set --global fish_color_param '#79c0ff'
+
 # dotfiles 管理：镜像目录方案
 # 改完配置后执行 dotsync：拷贝配置到 ~/dotfiles 并推送 GitHub
 function dotsync

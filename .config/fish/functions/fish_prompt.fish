@@ -5,7 +5,7 @@ function fish_prompt --description 'Restrained single-line prompt with Git branc
     set -l path_color (set_color '#58a6ff')
     set -l branch_color (set_color '#7ee787')
     set -l dirty_color (set_color '#d29922')
-    set -l prompt_color (set_color '#ffffff')
+    set -l prompt_color (set_color '#ffa657')
 
     set -l user_name (id -un)
     set -l host_name (hostname -s)
